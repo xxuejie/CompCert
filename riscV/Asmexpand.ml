@@ -177,8 +177,8 @@ let expand_builtin_memcpy_small sz al src dst =
   let rec copy osrc odst sz =
     if sz >= 8 && al >= 8 then
       begin
-        emit (Pfld (F0, rsrc, Ofsimm osrc));
-        emit (Pfsd (F0, rdst, Ofsimm odst));
+        emit (Pld (X31, rsrc, Ofsimm osrc));
+        emit (Psd (X31, rdst, Ofsimm odst));
         copy (Ptrofs.add osrc _8) (Ptrofs.add odst _8) (sz - 8)
       end
     else if sz >= 4 && al >= 4 then
@@ -219,7 +219,7 @@ let expand_builtin_memcpy_big sz al src dst =
   (* Use X7 as loop count, X1 and F0 as ld/st temporaries. *)
   let (load, store, chunksize) =
     if al >= 8 then
-      (Pfld (F0, s, Ofsimm _0), Pfsd (F0, d, Ofsimm _0), 8)
+      (Pld (X31, s, Ofsimm _0), Psd (X31, d, Ofsimm _0), 8)
     else if al >= 4 then
       (Plw (X31, s, Ofsimm _0), Psw (X31, d, Ofsimm _0), 4)
     else if al = 2 then
