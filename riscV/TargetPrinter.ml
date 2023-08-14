@@ -104,6 +104,9 @@ module Target : TARGET =
           sprintf ".section	\"%s\",\"a%s%s\",%%progbits"
             s (if wr then "w" else "") (if ex then "x" else "")
       | Section_ais_annotation -> sprintf ".section	\"__compcert_ais_annotations\",\"\",@note"
+      | Section_named_function name -> sprintf ".section .text.%s,\"ax\",@progbits" name
+      | Section_named_const name -> sprintf ".section .rodata.%s,\"a\"" name
+      | Section_named_static name -> sprintf ".section .bss.%s,\"aw\",@nobits" name
 
     let section oc sec =
       fprintf oc "	%s\n" (name_of_section sec)

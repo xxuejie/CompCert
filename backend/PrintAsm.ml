@@ -70,7 +70,8 @@ module Printer(Target:TARGET) =
       Hashtbl.clear current_function_labels;
       Debug.symbol_printed (extern_atom name);
       let (text, lit, jmptbl) = get_section_names name in
-      Target.section oc text;
+      let function_section = if !Clflags.option_ffunction_sections then Section_named_function (extern_atom name) else text in
+      Target.section oc function_section;
       let alignment =
         match !Clflags.option_falignfunctions with Some n -> n | None -> Target.default_falignment in
       Target.print_align oc alignment;
@@ -141,9 +142,16 @@ module Printer(Target:TARGET) =
       | _  ->
           Debug.symbol_printed (extern_atom name);
           let sec =
-            match C2C.atom_sections name with
-            | [s] -> s
-            |  _  -> Section_data Init
+            let orig_sec = match C2C.atom_sections name with
+                           | [s] -> s
+                           |  _  -> Section_data Init in
+            if !Clflags.option_fdata_sections then
+              match orig_sec with
+              | Section_const Init -> Section_named_const (extern_atom name)
+              | Section_data Uninit -> Section_named_static (extern_atom name)
+              | _ -> orig_sec
+            else
+              orig_sec
           and align =
             match C2C.atom_alignof name with
             | Some a -> a

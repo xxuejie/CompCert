@@ -39,6 +39,9 @@ type section_name =
   | Section_debug_ranges
   | Section_debug_str
   | Section_ais_annotation
+  | Section_named_function of string
+  | Section_named_const of string
+  | Section_named_static of string
 
 type access_mode =
   | Access_default

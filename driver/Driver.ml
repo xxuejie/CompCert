@@ -370,6 +370,8 @@ let cmdline_actions =
   @ f_opt "inline-functions-called-once" option_finline_functions_called_once
 (* Code generation options *)
   @ f_opt "fpu" option_ffpu
+  @ f_opt "function-sections" option_ffunction_sections
+  @ f_opt "data-sections" option_fdata_sections
   @ f_opt "sse" option_ffpu (* backward compatibility *)
   @ [
 (* Catch options that are not handled *)
